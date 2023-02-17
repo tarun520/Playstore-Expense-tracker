@@ -61,7 +61,7 @@
     </style>
 </head>
 <body>
-    <form action="">
+    <form action="" onsubmit="submitdetails(event)">
         <h1>Expense Tracker</h1>
         <label for="name">Name</label>
         <input type="text" name="name">
@@ -72,5 +72,7 @@
         <button type="submit" name="submit">Sign In</button>
         <a href="">existing-user/login</a>
     </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.3/axios.min.js" integrity="sha512-wS6VWtjvRcylhyoArkahZUkzZFeKB7ch/MHukprGSh1XIidNvHG1rxPhyFnL73M0FC1YXPIXLRDAoOyRJNni/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./signup.js"></script>
 </body>
 </html>
