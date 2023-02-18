@@ -10,9 +10,13 @@ async function onlogin(e)
         if(response.status===201)
         {
             alert(response.data.message)
+            window.location.href='./exp.html'
+        }
+        else{
+            throw new Error(response.data.message)
         }
     })
     .catch(err=>{
-        throw new Error(err)
+        document.body.innerHTML += `<div style='color:red;'>${err}</div>`;
     })
 }
