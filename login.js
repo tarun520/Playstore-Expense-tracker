@@ -10,6 +10,7 @@ async function onlogin(e)
         if(response.status===201)
         {
             alert(response.data.message)
+            localStorage.setItem('token',response.data.token)
             window.location.href='./exp.html'
         }
         else{

@@ -13,9 +13,13 @@ function savetolocalstorage(event)
         choosecategory
        
     }
-    axios.post('http://localhost:3000/expenses/add',obj)
+    const token=localStorage.getItem('token')
+    axios.post('http://localhost:3000/expenses/add',obj,{headers:{"Authorisation":token}})
     .then((res)=>{
+        if(res===201)
+        {
         showuserdetails(res.data.data)
+        }
     })
     .catch((err)=>console.log(err))
     
@@ -44,7 +48,8 @@ function edituser(useramount,userdescription,choosecategory,userid)
 }
 function deluser(userid)
 {
-    axios.delete(`http://localhost:3000/expenses/delete/${userid}`)
+    const token=localStorage.getItem('token')
+    axios.delete(`http://localhost:3000/expenses/delete/${userid}`,{headers:{'Authorisation':token}})
     .then(
         removeuser(userid))
     .catch((err)=>{
@@ -62,7 +67,8 @@ function removeuser(userid)
 }
 window.addEventListener('DOMContentLoaded',()=>
 {
-    axios.get('http://localhost:3000/expenses/getall')
+    const token=localStorage.getItem('token')
+    axios.get('http://localhost:3000/expenses/getall',{headers:{'Authorisation':token}})
     .then((res)=>{
         console.log(res.data)
         for(var i=0;i<res.data.allexpenses.length;i++)
