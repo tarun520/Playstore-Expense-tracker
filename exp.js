@@ -16,10 +16,8 @@ function savetolocalstorage(event)
     const token=localStorage.getItem('token')
     axios.post('http://localhost:3000/expenses/add',obj,{headers:{"Authorisation":token}})
     .then((res)=>{
-        if(res===201)
-        {
+        
         showuserdetails(res.data.data)
-        }
     })
     .catch((err)=>console.log(err))
     
@@ -101,13 +99,15 @@ document.getElementById('prm').onclick=async function(e){
         "key":response.data.key_id,
         "order_id":response.data.order.id,
         "handler":async function(response){
-            await axios.post('http://localhost:3000/updatetransactionstatus',
+          const res=await axios.post('http://localhost:3000/updatetransactionstatus',
             {
                 order_id:options.order_id,
                 payment_id:response.razorpay_payment_id
             },{headers:{'Authorisation':token}})
-
+            localStorage.setItem('token',res.data.token)
             alert('you are premiumuser now')
+            document.getElementById('message').innerHTML="you are a premium user now"
+    document.getElementById('prm').style.visibility="hidden"
             showleaderboard()
         }
         
@@ -132,10 +132,12 @@ function showleaderboard()
     inputelement.type="button";
     inputelement.value="show leaderboard"
     inputelement.onclick=async()=>{
+        inputelement.style.visibility='hidden'
         let token=localStorage.getItem('token')
         const response=await axios.get('http://localhost:3000/premium/leaderboard',{headers:{'Authorisation':token}})
         var leaderboardele=document.getElementById('leaderboard')
         leaderboardele.innerHTML+=`<h1>Leader Board</h1>`
+        
         response.data.forEach((arrofuserexpenses)=>{
             leaderboardele.innerHTML+=`<li>name:${arrofuserexpenses.name}-totalexpenses${arrofuserexpenses.totalexpenses}</li>`
         })
