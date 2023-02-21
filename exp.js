@@ -65,9 +65,26 @@ function removeuser(userid)
         parnode.removeChild(childnode);
     }
 }
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
 window.addEventListener('DOMContentLoaded',()=>
 {
+  
     const token=localStorage.getItem('token')
+    const pruser=parseJwt(token)
+    if(pruser.ispremiumuser)
+    {
+    document.getElementById('message').innerHTML="you are a premium user now"
+    document.getElementById('prm').style.visibility="hidden"
+    showleaderboard()
+    }
     axios.get('http://localhost:3000/expenses/getall',{headers:{'Authorisation':token}})
     .then((res)=>{
         console.log(res.data)
@@ -91,13 +108,38 @@ document.getElementById('prm').onclick=async function(e){
             },{headers:{'Authorisation':token}})
 
             alert('you are premiumuser now')
+            showleaderboard()
         }
         
     } 
+
+  
+   
+    
     const rzp=new Razorpay(options);
        rzp.open();
        e.preventDefault()
     rzp.on('payment.failed',function(response){
         alert('oops something went wrong')
     })
+
+}
+
+
+function showleaderboard()
+{
+    const inputelement=document.createElement('input');
+    inputelement.type="button";
+    inputelement.value="show leaderboard"
+    inputelement.onclick=async()=>{
+        let token=localStorage.getItem('token')
+        const response=await axios.get('http://localhost:3000/premium/leaderboard',{headers:{'Authorisation':token}})
+        var leaderboardele=document.getElementById('leaderboard')
+        leaderboardele.innerHTML+=`<h1>Leader Board</h1>`
+        response.data.forEach((arrofuserexpenses)=>{
+            leaderboardele.innerHTML+=`<li>name:${arrofuserexpenses.name}-totalexpenses${arrofuserexpenses.totalexpenses}</li>`
+        })
+
+    }
+    document.getElementById('message').appendChild(inputelement)
 }
