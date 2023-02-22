@@ -21,3 +21,8 @@ async function onlogin(e)
         document.body.innerHTML += `<div style='color:red;'>${err}</div>`;
     })
 }
+// document.getElementById('forgot-pass').onclick=async function(e)
+// {
+//     l
+//     await axios.get('http://localhost:3000//password/forgotpassword')
+// }

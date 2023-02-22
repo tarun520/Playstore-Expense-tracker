@@ -11,6 +11,7 @@ async function submitdetails(e)
     const response=await axios.post('http://localhost:3000/user/signup',signupdetails)
     if(response.status===201)
     {
+        console.log(response)
         window.location.href='./login.html'
     }
     else{
