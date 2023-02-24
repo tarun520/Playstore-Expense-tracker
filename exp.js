@@ -1,4 +1,4 @@
-
+const token = localStorage.getItem('token')
 function savetolocalstorage(event)
 {
     event.preventDefault()
@@ -126,10 +126,10 @@ document.getElementById('prm').onclick=async function(e){
 }
 function download()
 {
-    const token=localStorage.getItem('token')
+    // const token=localStorage.getItem('token')
     axios.get('http://localhost:3000/user/download',{headers:{'Authorisation':token}})
     .then((res)=>{
-        if(res===201)
+        if(res.status===201)
         {
             var a=document.createElement("a");
             a.href=res.data.fileurl;
@@ -140,7 +140,12 @@ function download()
             throw new Error(res.data.message)
         }
     })
-    .catch(err=>console.log(err))
+    .catch((err)=>{
+        showError(err)
+    })
+}
+function showError(err){
+    document.body.innerHTML += `<div style="color:red;"> ${err}</div>`
 }
 
 
