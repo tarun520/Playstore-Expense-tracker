@@ -124,6 +124,24 @@ document.getElementById('prm').onclick=async function(e){
     })
 
 }
+function download()
+{
+    const token=localStorage.getItem('token')
+    axios.get('http://localhost:3000/user/download',{headers:{'Authorisation':token}})
+    .then((res)=>{
+        if(res===201)
+        {
+            var a=document.createElement("a");
+            a.href=res.data.fileurl;
+            a.download="myexpense.csv";
+            a.click();
+        }
+        else {
+            throw new Error(res.data.message)
+        }
+    })
+    .catch(err=>console.log(err))
+}
 
 
 function showleaderboard()
