@@ -27,6 +27,7 @@ function showuserdetails(data)
 {
     document.getElementById('exp').value='';
     document.getElementById('des').value='';
+
     let parentele=document.getElementById('frm')
     let childele=`<li id=${data.id}>${data.amount}-${data.description}-${data.category}
                         <button class='btn btn-primary btn-sm' onClick=deluser('${data.id}')>delete</button>
@@ -83,15 +84,63 @@ window.addEventListener('DOMContentLoaded',()=>
     document.getElementById('prm').style.visibility="hidden"
     showleaderboard()
     }
-    axios.get('http://localhost:3000/expenses/getall',{headers:{'Authorisation':token}})
+    const page=1;
+    axios.get(`http://localhost:3000/expenses/getall?page=${page}`,{headers:{'Authorisation':token}})
     .then((res)=>{
         console.log(res.data)
         for(var i=0;i<res.data.allexpenses.length;i++)
         {
             showuserdetails(res.data.allexpenses[i]);
         }
+        showpagination(res.data)
+        
+        
+
     })
 })
+const  pagination=document.getElementById('pagination')
+function showpagination({
+    currentpage,
+    hasnextpage,
+    nextpage,
+    haspreviouspage,
+    previouspage,
+    lastpage
+})
+{
+    
+    pagination.innerHTML=''
+    if(haspreviouspage)
+    {
+        const btn2=document.createElement('button')
+        btn2.innerHTML=previouspage
+        btn2.addEventListener('click',()=>{getall(previouspage)})
+        pagination.appendChild(btn2)
+    }
+    const btn1=document.createElement('button')
+    btn1.innerHTML=currentpage
+    btn1.addEventListener('click',()=>{getall(currentpage)})
+    pagination.appendChild(btn1)
+    if(hasnextpage)
+    {
+        const btn3=document.createElement('button')
+        btn3.innerHTML=nextpage
+        btn3.addEventListener('click',()=>{getall(nextpage)})
+        pagination.appendChild(btn3)
+    }
+    
+}
+async function getall(page)
+{
+    axios.get(`http://localhost:3000/expenses/getall?page=${page}`,{headers:{'Authorisation':token}})
+    .then((res)=>{
+        for(var i=0;i<res.data.allexpenses.length;i++)
+        {
+            showuserdetails(res.data.allexpenses[i]);
+        }
+        showpagination(res.data)
+    })
+}
 document.getElementById('prm').onclick=async function(e){
     const token=localStorage.getItem('token');
     const response=await axios.get('http://localhost:3000/premium/premiummembership',{headers:{'Authorisation':token}})
