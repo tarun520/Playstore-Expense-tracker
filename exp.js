@@ -1,4 +1,5 @@
 const token = localStorage.getItem('token')
+const limit=document.getElementById('rows').value
 function savetolocalstorage(event)
 {
     event.preventDefault()
@@ -25,11 +26,13 @@ function savetolocalstorage(event)
 }
 function showuserdetails(data)
 {
-    document.getElementById('exp').value='';
-    document.getElementById('des').value='';
+    // parentele.innerHTML=''
+    // document.getElementById('exp').value='';
+    // document.getElementById('des').value='';
 
     let parentele=document.getElementById('frm')
-    let childele=`<li id=${data.id}>${data.amount}-${data.description}-${data.category}
+    let childele=''
+    childele=`<li id=${data.id}>${data.amount}-${data.description}-${data.category}
                         <button class='btn btn-primary btn-sm' onClick=deluser('${data.id}')>delete</button>
                         <button class='btn btn-primary btn-sm' onClick=edituser('${data.amount}','${data.description}','${data.choosecategory}','${data._id}')>edit</button></li>`
     parentele.innerHTML=parentele.innerHTML+childele
@@ -84,8 +87,9 @@ window.addEventListener('DOMContentLoaded',()=>
     document.getElementById('prm').style.visibility="hidden"
     showleaderboard()
     }
+   
     const page=1;
-    axios.get(`http://localhost:3000/expenses/getall?page=${page}`,{headers:{'Authorisation':token}})
+    axios.get(`http://localhost:3000/expenses/getall?page=${page}&limit=${limit}`,{headers:{'Authorisation':token}})
     .then((res)=>{
         console.log(res.data)
         for(var i=0;i<res.data.allexpenses.length;i++)
@@ -114,7 +118,9 @@ function showpagination({
     {
         const btn2=document.createElement('button')
         btn2.innerHTML=previouspage
-        btn2.addEventListener('click',()=>{getall(previouspage)})
+        btn2.addEventListener('click',()=>
+        {getall(previouspage);
+        })
         pagination.appendChild(btn2)
     }
     const btn1=document.createElement('button')
@@ -132,10 +138,12 @@ function showpagination({
 }
 async function getall(page)
 {
-    axios.get(`http://localhost:3000/expenses/getall?page=${page}`,{headers:{'Authorisation':token}})
+    axios.get(`http://localhost:3000/expenses/getall?page=${page}&limit=${limit}`,{headers:{'Authorisation':token}})
     .then((res)=>{
+        
         for(var i=0;i<res.data.allexpenses.length;i++)
-        {
+        {   
+            
             showuserdetails(res.data.allexpenses[i]);
         }
         showpagination(res.data)
